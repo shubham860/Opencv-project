@@ -47,18 +47,25 @@ cv2.imshow('Lane lines',line_image)
 
 
 #combine images
-
 combo_image = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
 cv2.imshow('scatter_image',combo_image)
 
 #find average lines on image
 def make_coordinates(image, line_parameters):
-    slope, intercept = line_parameters
-    y1 = int(image.shape[0])
+    slope,intercept = line_parameters
+    y1 = image.shape[0]
     y2 = int(y1*(3/5))
     x1 = int((y1 - intercept)/slope)
     x2 = int((y2 - intercept)/slope)
     return np.array([x1, y1, x2, y2])
+    '''for x in range(0,len(line_parameters),2):
+        slope,intercept = line_parameters[x],line_parameters[x+1]
+        #print(slope,intercept)
+        y1 = image.shape[0]
+        y2 = int(y1*(3/5))
+        x1 = int((y1 - intercept)/slope)
+        x2 = int((y2 - intercept)/slope)
+        return np.array([x1, y1, x2, y2])'''
 
 def average_slope_intercept(image, lines):
     left_fit = []
@@ -76,16 +83,16 @@ def average_slope_intercept(image, lines):
     right_fit_average = np.average(right_fit, axis=0)
     left_line = make_coordinates(image, left_fit_average)
     right_line = make_coordinates(image, right_fit_average)
-    return np.array([left_line, right_line])        
+    return np.array([left_line, right_line])
             
             
-#averaged_lines = average_slope_intercept(lane_image, lines)
-#line_image = display_lines(lane_image, averaged_lines)
-#combo_image = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
-#cv2.imshow('Real_image',combo_image)
+averaged_lines = average_slope_intercept(lane_image, lines)
+line_image = display_lines(lane_image, averaged_lines)
+combo_image = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
+cv2.imshow('Real_image',combo_image)
 
 #video capture object
-cap = cv2.VideoCapture("test2.mp4")
+'''cap = cv2.VideoCapture("test2.mp4")
 while(cap.isOpened):   # returns true if video is intialised
     _,frame = cap.read()   #decode every video frame
     canny_image = canny_detection(frame)
@@ -98,7 +105,7 @@ while(cap.isOpened):   # returns true if video is intialised
     if cv2.waitKey(1) == ord('q'):
         break
 cap.release()
-cv2.distroyAllWindows()
+cv2.distroyAllWindows()'''
     
 
 
